@@ -18,9 +18,9 @@ for y in range(H):
 draw.rectangle([0, 0, W, 6], fill="#3FE0C5")
 draw.rectangle([0, H - 6, W, H], fill="#F0B03F")
 
-logo_path = "assets/logo-dark-theme.png"
+logo_path = "assets/logo.png"
 if not os.path.exists(logo_path):
-    logo_path = "assets/logo.png"
+    logo_path = "assets/logo-dark-theme.png"
 logo = Image.open(logo_path).convert("RGBA")
 max_h = 220
 ratio = max_h / logo.height

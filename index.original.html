@@ -233,7 +233,6 @@ h2 em{font-style:italic;color:var(--mint)}
 .manifesto{font:350 clamp(1.3rem,2.3vw,1.85rem)/1.58 var(--serif);max-width:62ch}
 .manifesto em{font-style:italic}
 .m-mint{color:var(--mint)} .m-amber{color:var(--amber)}
-/* four pillars — straight from the centre's poster */
 .pillars{margin-top:clamp(48px,8vh,78px);border-block:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
 .pillar{padding:28px 24px;border-inline-start:1px solid var(--line)}
 .pillar:first-child{border-inline-start:0}
@@ -245,7 +244,6 @@ h2 em{font-style:italic;color:var(--mint)}
 .pillar b{display:block;font:400 1.2rem var(--serif);margin-top:14px;font-weight:400}
 html[lang="ar"] .pillar b{line-height:1.6}
 .pillar span{display:block;font:400 9px var(--mono);color:var(--muted);text-transform:uppercase;margin-top:6px;line-height:1.8}
-/* week strip — every day is a potential class day */
 .week-title{font:350 clamp(1.5rem,2.6vw,2.1rem) var(--serif);margin:clamp(56px,9vh,90px) 0 6px}
 .week-title em{font-style:italic;color:var(--amber)}
 .week-sub{font:400 13px var(--sans);color:var(--muted);max-width:64ch}
@@ -295,7 +293,6 @@ html[lang="ar"] .pillar b{line-height:1.6}
   .p-photo{display:block;margin-top:24px;background:#0E4A42;overflow:hidden}
   .p-photo img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;mix-blend-mode:luminosity;filter:contrast(1.05) brightness(.95)}
 }
-/* teachers sub-block inside the programs section */
 .prog-teachers{margin-top:clamp(64px,10vh,100px);padding-top:clamp(40px,6vh,56px);border-top:1px solid var(--line)}
 
 /* cursor-following preview */
@@ -468,16 +465,20 @@ html[lang="ar"] .t-bio{font-style:normal;line-height:1.9}
 .err-msg{font:400 11px var(--mono);color:var(--red);margin-top:8px;display:none}
 .field.err .err-msg{display:block}
 .f-note{margin-top:20px;font:400 10px var(--mono);letter-spacing:.16em;color:var(--faint);line-height:2}
-.visit{background:var(--panel);border:1px solid var(--line);padding:36px 34px;position:relative;align-self:start}
-.visit>.s8{position:absolute;top:26px;inset-inline-end:26px;width:26px;height:26px;color:var(--mint);opacity:.55}
-.visit h3{font:400 1.65rem var(--serif);margin-bottom:6px}
-.v-sub{font:italic 350 14.5px var(--serif);color:var(--mint);margin-bottom:14px}
-.v-item{display:flex;gap:15px;padding:17px 0;border-top:1px solid var(--line);align-items:flex-start;font-size:14.5px}
-.v-item:first-of-type{margin-top:14px}
-.v-item svg{width:16px;height:16px;color:var(--mint);flex:none;margin-top:3px}
-.v-item small{display:block;font:400 9.5px var(--mono);letter-spacing:.2em;color:var(--faint);text-transform:uppercase;margin-bottom:3px}
-.v-item a:hover{color:var(--mint)}
-.v-tag{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);font:400 9.5px var(--mono);letter-spacing:.2em;color:var(--faint)}
+/* result panel (success / whatsapp / failure) */
+.result{border:1px solid var(--line-2);border-inline-start:3px solid var(--mint);background:var(--panel);padding:34px 30px;outline:none}
+.result.fail{border-inline-start-color:var(--amber)}
+.result .res-ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--mint-dim);color:var(--mint);margin-bottom:16px}
+.result.fail .res-ico{background:var(--amber-dim);color:var(--amber)}
+.result .res-ico svg{width:20px;height:20px}
+.result h3{font:400 1.5rem var(--serif);margin-bottom:8px}
+html[lang="ar"] .result h3{line-height:1.6}
+.result p{color:var(--muted);font-size:14.5px;max-width:52ch}
+.res-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.res-wa{width:16px;height:16px;color:#25D366}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.btn.shake{animation:shake .35s}
+.hp{position:absolute !important;left:-9999px !top;top:0;opacity:0;height:0;width:0}
 @media (max-width:900px){.reg-grid{grid-template-columns:1fr}}
 @media (max-width:620px){.f-row{grid-template-columns:1fr}}
 
@@ -653,7 +654,6 @@ footer{border-top:1px solid var(--line)}
     </div>
     <div class="prog-list" id="progList"></div>
 
-    <!-- teachers — part of the same section -->
     <div class="prog-teachers">
       <div class="sec-head sec-top reveal">
         <div>
@@ -824,12 +824,14 @@ footer{border-top:1px solid var(--line)}
             <label for="fLevel" data-i18n="reg.levelL">Your child's level *</label>
             <div class="sel">
               <select id="fLevel" name="level">
+                <option value="" disabled selected hidden data-i18n="reg.lvPh">Choose a level…</option>
                 <option value="primary" data-i18n="reg.lv1">Primary · CP – CM2</option>
                 <option value="college" data-i18n="reg.lv2">Collège · 1ère – 3ème</option>
                 <option value="lycee" data-i18n="reg.lv3">Lycée · TC – 2BAC</option>
               </select>
               <i data-lucide="chevron-down"></i>
             </div>
+            <p class="err-msg" data-i18n="reg.errLevel">Choose your child's level.</p>
           </div>
           <div class="field">
             <label for="fStudent" data-i18n="reg.student">Pupil's first name</label>
@@ -846,11 +848,24 @@ footer{border-top:1px solid var(--line)}
         </div>
         <div class="field">
           <label for="fMsg" data-i18n="reg.msg">Anything we should know?</label>
-          <textarea id="fMsg" name="msg" data-i18n-ph="reg.phMsg" placeholder="Which days suit you? Which subjects?"></textarea>
+          <textarea id="fMsg" name="msg" maxlength="800" data-i18n-ph="reg.phMsg" placeholder="Which days suit you? Which subjects?"></textarea>
         </div>
         <button type="submit" class="btn primary" id="fSubmit"><span data-i18n="reg.submit">Send my request</span> <i data-lucide="send"></i></button>
         <p class="f-note" data-i18n="reg.note">TELL US YOUR PREFERRED DAYS · WE CONFIRM THE GROUP'S TIMES ON WHATSAPP</p>
+        <!-- honeypot — bots fill this, humans never see it -->
+        <input type="text" id="fHoney" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       </form>
+
+      <!-- result panel: success / whatsapp / failure -->
+      <div class="result" id="formResult" hidden tabindex="-1" role="alert">
+        <span class="res-ico" id="resIco"></span>
+        <h3 id="resTitle"></h3>
+        <p id="resMsg"></p>
+        <div class="res-actions">
+          <a class="btn primary" id="resWaBtn" target="_blank" rel="noopener"><svg class="res-wa"><use href="#wa"/></svg><span id="resWaTxt"></span></a>
+          <button type="button" class="btn ghost" id="resRetry" hidden data-i18n="reg.res.retry">Try again</button>
+        </div>
+      </div>
 
       <aside class="visit reveal" style="--d:.12s">
         <svg class="s8"><use href="#star8"/></svg>
@@ -930,6 +945,23 @@ const CONFIG = {
   zoom:      14,
   phoneDisplay: "+212 612 692 300",
   centerWa: "212612692300",
+
+  /* ── FORM DELIVERY ─────────────────────────────────────────────
+     MODE B (default · active now): formEnabled:false
+       → after validation, WhatsApp opens with the full request
+         pre-filled. Parent presses Send. Always works, $0, no setup.
+
+     MODE A (email via FormSubmit · free): formEnabled:true
+       1) Put the centre's real Gmail in formEmail below
+       2) Deploy the site, then submit the form ONCE yourself
+       3) Open the "FormSubmit Activation" email in that inbox
+          and click the activation link
+       4) Flip formEnabled to true — every request now also
+          lands in the inbox (perfect trigger for a Make.com →
+          CallMeBot WhatsApp automation later, no code change) */
+  formEnabled: false,
+  formEmail: "centresouifi@gmail.com",   /* ⚠️ REPLACE with the centre's real email */
+
   videoSrc:    "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
   videoPoster: "https://picsum.photos/seed/centre-souifi-front/1600/900.jpg"
 };
@@ -988,9 +1020,21 @@ en:{
  "reg.label":"Register","reg.h2":"Save your child's seat <em>after six.</em>",
  "reg.name":"Parent's name *","reg.phone":"Phone / WhatsApp *","reg.levelL":"Your child's level *","reg.student":"Pupil's first name","reg.course":"Program *","reg.msg":"Anything we should know?",
  "reg.phName":"e.g. Fatima Zahra Belkadi","reg.phPhone":"+212 6 …","reg.phStudent":"e.g. Anas","reg.phMsg":"Which days suit you? Which subjects?",
+ "reg.lvPh":"Choose a level…",
  "reg.lv1":"Primary · CP – CM2","reg.lv2":"Collège · 1ère – 3ème","reg.lv3":"Lycée · TC – 2BAC",
- "reg.errName":"Please tell us your name.","reg.errPhone":"That number looks too short.","reg.errCourse":"Pick a program — or choose \"Not sure yet\".",
+ "reg.errName":"Please tell us your name.","reg.errPhone":"That number doesn't look right.","reg.errLevel":"Choose your child's level.","reg.errCourse":"Pick a program — or choose \"Not sure yet\".",
  "reg.submit":"Send my request","reg.sending":"Sending…","reg.note":"TELL US YOUR PREFERRED DAYS · WE CONFIRM THE GROUP'S TIMES ON WHATSAPP",
+ "wa.title":"*Registration request — Centre Souifi*","wa.parent":"Parent","wa.phone":"Phone","wa.child":"Child","wa.program":"Program","wa.note":"Note",
+ "reg.res.waT":"WhatsApp is opening…",
+ "reg.res.waM":"If nothing opened, tap the button below and press Send — your request arrives instantly on our WhatsApp.",
+ "reg.res.waBtn":"Open WhatsApp",
+ "reg.res.okT":"Request received!",
+ "reg.res.okM":"Reference {ref}. For an instant delivery to our team, also send it on WhatsApp — one tap, same details.",
+ "reg.res.okBtn":"Send on WhatsApp too",
+ "reg.res.failT":"Automatic sending didn't go through",
+ "reg.res.failM":"Probably a connection hiccup. Nothing was lost — your request is ready: send it via WhatsApp instead, or try again.",
+ "reg.res.failBtn":"Send via WhatsApp",
+ "reg.res.retry":"Try again",
  "reg.visitT":"Visit us","reg.visitS":"Come meet us in the evening — or message us on WhatsApp.",
  "reg.vAddr":"Address","reg.vHours":"When","reg.vPhone":"Phone / WhatsApp",
  "reg.addrVal":"Centre Souifi · Souk El Arbaa du Gharb","reg.hoursVal":"Evenings from 18:00 · all week · times set per group","reg.vTag":"CENTRE SOUIFI · SOUK EL ARBAA · EVENINGS ALL WEEK",
@@ -998,8 +1042,7 @@ en:{
  "foot.addr":"SOUK EL ARBAA DU GHARB · MOROCCO","foot.hours":"EVENINGS ALL WEEK · FROM 18:00",
  "foot.bar1":"© 2025 CENTRE SOUIFI — SOUK EL ARBAA DU GHARB, MOROCCO","foot.bar2":"POUR LE SOUTIEN ET LES LANGUES · STATIC SITE ON GITHUB PAGES",
  "toast.sel":"selected","toast.selMsg":"Finish the form below — we reply on WhatsApp.",
- "toast.err":"Almost there","toast.errMsg":"Please fix the highlighted fields.",
- "toast.ok":"Request received","toast.okMsg":"Reference {ref} — we'll contact you on WhatsApp to confirm your group's times."
+ "toast.err":"Almost there","toast.errMsg":"Please check the highlighted fields."
 },
 fr:{
  docTitle:"Centre Souifi — Souk El Arbaa du Gharb · Soutien scolaire & langues du soir",
@@ -1052,9 +1095,21 @@ fr:{
  "reg.label":"Inscription","reg.h2":"Réservez la place de votre enfant <em>après six heures.</em>",
  "reg.name":"Nom du parent *","reg.phone":"Téléphone / WhatsApp *","reg.levelL":"Niveau de votre enfant *","reg.student":"Prénom de l'élève","reg.course":"Programme *","reg.msg":"Quelque chose à nous dire ?",
  "reg.phName":"ex. Fatima Zahra Belkadi","reg.phPhone":"+212 6 …","reg.phStudent":"ex. Anas","reg.phMsg":"Quels jours vous conviennent ? Quelles matières ?",
+ "reg.lvPh":"Choisir un niveau…",
  "reg.lv1":"Primaire · CP – CM2","reg.lv2":"Collège · 1ère – 3ème","reg.lv3":"Lycée · TC – 2BAC",
- "reg.errName":"Dites-nous votre nom.","reg.errPhone":"Ce numéro semble trop court.","reg.errCourse":"Choisissez un programme — ou « Pas sûr encore ».",
+ "reg.errName":"Dites-nous votre nom.","reg.errPhone":"Ce numéro ne semble pas correct.","reg.errLevel":"Choisissez le niveau de votre enfant.","reg.errCourse":"Choisissez un programme — ou « Pas sûr encore ».",
  "reg.submit":"Envoyer ma demande","reg.sending":"Envoi…","reg.note":"DITES-NOUS VOS JOURS PRÉFÉRÉS · LES HORAIRES DU GROUPE SONT CONFIRMÉS SUR WHATSAPP",
+ "wa.title":"*Demande d'inscription — Centre Souifi*","wa.parent":"Parent","wa.phone":"Téléphone","wa.child":"Enfant","wa.program":"Programme","wa.note":"Remarque",
+ "reg.res.waT":"WhatsApp s'ouvre…",
+ "reg.res.waM":"Si rien ne s'est ouvert, touchez le bouton ci-dessous puis appuyez sur Envoyer — votre demande arrive instantanément sur notre WhatsApp.",
+ "reg.res.waBtn":"Ouvrir WhatsApp",
+ "reg.res.okT":"Demande reçue !",
+ "reg.res.okM":"Référence {ref}. Pour une livraison instantanée à notre équipe, envoyez-la aussi sur WhatsApp — une touche, mêmes détails.",
+ "reg.res.okBtn":"Envoyer aussi sur WhatsApp",
+ "reg.res.failT":"L'envoi automatique n'a pas abouti",
+ "reg.res.failM":"Probablement un souci de connexion. Rien n'est perdu — votre demande est prête : envoyez-la plutôt via WhatsApp, ou réessayez.",
+ "reg.res.failBtn":"Envoyer via WhatsApp",
+ "reg.res.retry":"Réessayer",
  "reg.visitT":"Passez nous voir","reg.visitS":"Venez nous rencontrer en soirée — ou écrivez-nous sur WhatsApp.",
  "reg.vAddr":"Adresse","reg.vHours":"Quand","reg.vPhone":"Téléphone / WhatsApp",
  "reg.addrVal":"Centre Souifi · Souk El Arbaa du Gharb","reg.hoursVal":"Soirs dès 18h · tous les jours · horaires par groupe","reg.vTag":"CENTRE SOUIFI · SOUK EL ARBAA · SOIRS TOUS LES JOURS",
@@ -1062,8 +1117,7 @@ fr:{
  "foot.addr":"SOUK EL ARBAA DU GHARB · MAROC","foot.hours":"SOIRS TOUS LES JOURS · DÈS 18H",
  "foot.bar1":"© 2025 CENTRE SOUIFI — SOUK EL ARBAA DU GHARB, MAROC","foot.bar2":"POUR LE SOUTIEN ET LES LANGUES · SITE STATIQUE SUR GITHUB PAGES",
  "toast.sel":"sélectionné","toast.selMsg":"Terminez le formulaire ci-dessous — réponse par WhatsApp.",
- "toast.err":"Presque !","toast.errMsg":"Corrigez les champs signalés, s'il vous plaît.",
- "toast.ok":"Demande reçue","toast.okMsg":"Référence {ref} — nous vous contactons sur WhatsApp pour confirmer les horaires du groupe."
+ "toast.err":"Presque !","toast.errMsg":"Vérifiez les champs signalés, s'il vous plaît."
 },
 ar:{
  docTitle:"مركز السويفي — سوق الأربعاء · الدعم المدرسي واللغات مساءً",
@@ -1116,9 +1170,21 @@ ar:{
  "reg.label":"التسجيل","reg.h2":"احجز مقعد ابنك <em>بعد السادسة.</em>",
  "reg.name":"اسم الولي *","reg.phone":"الهاتف / واتساب *","reg.levelL":"مستوى ابنك *","reg.student":"اسم التلميذ(ة)","reg.course":"البرنامج *","reg.msg":"هل من شيء يجب أن نعرفه؟",
  "reg.phName":"مثال: فاطمة الزهراء بلقاضي","reg.phPhone":"+212 6 …","reg.phStudent":"مثال: أنس","reg.phMsg":"أيام مناسبة لك؟ أي المواد؟",
+ "reg.lvPh":"اختر المستوى…",
  "reg.lv1":"الابتدائي · 1 – 6","reg.lv2":"الإعدادي · 1 – 3","reg.lv3":"التأهيلي · الجذع – 2باك",
- "reg.errName":"عرّفنا باسمك من فضلك.","reg.errPhone":"يبدو هذا الرقم قصيرًا جدًا.","reg.errCourse":"اختر برنامجًا — أو «لست متأكدًا بعد».",
+ "reg.errName":"عرّفنا باسمك من فضلك.","reg.errPhone":"هذا الرقم لا يبدو صحيحًا.","reg.errLevel":"اختر مستوى ابنك.","reg.errCourse":"اختر برنامجًا — أو «لست متأكدًا بعد».",
  "reg.submit":"أرسل الطلب","reg.sending":"جارٍ الإرسال…","reg.note":"أخبرنا بأيامك المفضلة · نؤكد توقيتات المجموعة عبر واتساب",
+ "wa.title":"*طلب تسجيل — مركز السويفي*","wa.parent":"الولي","wa.phone":"الهاتف","wa.child":"الابن(ة)","wa.program":"البرنامج","wa.note":"ملاحظة",
+ "reg.res.waT":"يُفتح واتساب…",
+ "reg.res.waM":"إذا لم يُفتح شيء، اضغط الزر أسفله ثم اضغط «إرسال» — يصل طلبك فورًا إلى واتساب المركز.",
+ "reg.res.waBtn":"افتح واتساب",
+ "reg.res.okT":"تم استلام الطلب!",
+ "reg.res.okM":"المرجع {ref}. ولضمان وصوله فورًا لفريقنا، أرسله أيضًا عبر واتساب — بضغطة واحدة وبنفس التفاصيل.",
+ "reg.res.okBtn":"أرسله أيضًا عبر واتساب",
+ "reg.res.failT":"لم يكتمل الإرسال التلقائي",
+ "reg.res.failM":"على الأرجح مشكلة في الاتصال. لا شيء ضاع — طلبك جاهز: أرسله عبر واتساب بدلًا من ذلك، أو أعد المحاولة.",
+ "reg.res.failBtn":"أرسل عبر واتساب",
+ "reg.res.retry":"أعد المحاولة",
  "reg.visitT":"زرنا","reg.visitS":"تعال إلينا في الأمسية — أو راسلنا على واتساب.",
  "reg.vAddr":"العنوان","reg.vHours":"متى","reg.vPhone":"الهاتف / واتساب",
  "reg.addrVal":"مركز السويفي · سوق الأربعاء","reg.hoursVal":"أمسيات من 18:00 · كل الأيام · التوقيت لكل مجموعة","reg.vTag":"مركز السويفي · سوق الأربعاء · أمسية كل يوم",
@@ -1126,8 +1192,7 @@ ar:{
  "foot.addr":"سوق الأربعاء · المغرب","foot.hours":"أمسية كل يوم · من 18:00",
  "foot.bar1":"© 2025 مركز السويفي — سوق الأربعاء، المغرب","foot.bar2":"للدعم واللغات · موقع ثابت على GitHub Pages",
  "toast.sel":"تم اختياره","toast.selMsg":"أكمل النموذج أدناه — نرد عبر واتساب.",
- "toast.err":"كاد الأمر يكتمل","toast.errMsg":"صحّح الحقول المحددة من فضلك.",
- "toast.ok":"تم استلام الطلب","toast.okMsg":"المرجع {ref} — سنتواصل معك عبر واتساب لتأكيد توقيتات المجموعة."
+ "toast.err":"كاد الأمر يكتمل","toast.errMsg":"راجع الحقول المحددة من فضلك."
 }};
 const t = k => (T[LANG] && T[LANG][k]) || T.en[k] || k;
 
@@ -1174,10 +1239,9 @@ const QUOTES = [
   ar:{q:"مساءان في الأسبوع هنا، وصعد معدله في الرياضيات من 8 إلى 13. تحققت من ورقة النقاط بنفسي.",n:"مصطفى",m:"والد تلميذ في الأولى باك"}}
 ];
 
-/* ---- ROOMS (the 4 salles — profs pick whichever they want) ----
-   images: placeholder seeds now. When you have real photos, replace each entry
-   with your file path, e.g. images:"salle1.jpg" → "images/salle1-1.jpg"
-   (any entry containing "/" is used as a direct path, no code change needed). */
+/* ---- ROOMS (the 4 salles) ----
+   images: placeholder seeds now. For real photos use paths like "images/salle1-1.jpg"
+   (any entry containing "/" is used as a direct path — no code change needed). */
 const ROOMS_DATA = [
  {num:"01",images:["cs-room1-a","cs-room1-b","cs-room1-c","cs-room1-d"],
   name:{en:"The big room",fr:"La grande salle",ar:"القاعة الكبرى"},
@@ -1360,7 +1424,6 @@ function renderRooms(){
   icons();
 }
 
-/* lightbox */
 const lb = document.getElementById("lightbox"),
       lbImg = document.getElementById("lbImg"),
       lbCap = document.getElementById("lbCap"),
@@ -1551,9 +1614,23 @@ document.getElementById("vNext").addEventListener("click", () => { vi = (vi+1)%Q
 document.getElementById("vWrap").addEventListener("mouseenter", () => clearTimeout(vTimer));
 document.getElementById("vWrap").addEventListener("mouseleave", vRestart);
 
-/* ================= REGISTRATION FORM ================= */
+/* ================= REGISTRATION FORM =================
+   validate → deliver:
+   · Mode B (default): WhatsApp opens pre-filled — parent presses Send
+   · Mode A (formEnabled:true): silent POST to FormSubmit → email
+   · Any failure: WhatsApp fallback button, nothing is lost        */
 const form = document.getElementById("regForm"),
-      sel = document.getElementById("fCourse");
+      sel = document.getElementById("fCourse"),
+      fHoney = document.getElementById("fHoney"),
+      submitBtn = document.getElementById("fSubmit"),
+      resultPanel = document.getElementById("formResult"),
+      resIco = document.getElementById("resIco"),
+      resTitle = document.getElementById("resTitle"),
+      resMsg = document.getElementById("resMsg"),
+      resWaBtn = document.getElementById("resWaBtn"),
+      resWaTxt = document.getElementById("resWaTxt"),
+      resRetry = document.getElementById("resRetry");
+
 function buildSelect(){
   const cur = sel.value;
   sel.innerHTML = `<option value="">${t("prog.selectPh")}</option>` +
@@ -1561,36 +1638,169 @@ function buildSelect(){
     `<option value="unsure">${t("prog.unsure")}</option>`;
   sel.value = cur || "";
 }
-form.querySelectorAll("input, select, textarea").forEach(el =>
-  el.addEventListener("input", () => el.closest(".field").classList.remove("err")));
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const checks = [
-    ["fName",  v => v.trim().length >= 2],
-    ["fPhone", v => /^[+0-9][0-9\s()-]{7,}$/.test(v.trim())],
-    ["fCourse",v => !!v]
-  ];
-  let firstBad = null;
-  checks.forEach(([id, ok]) => {
-    const el = document.getElementById(id), bad = !ok(el.value);
-    el.closest(".field").classList.toggle("err", bad);
-    if (bad && !firstBad) firstBad = el;
+
+const digitsOf = v => v.replace(/[^\d]/g, "").replace(/^00/, "");
+function collect(){
+  const lv = document.getElementById("fLevel");
+  return {
+    name:    document.getElementById("fName").value.trim(),
+    phone:   document.getElementById("fPhone").value.trim(),
+    level:   lv.value,
+    levelText:  lv.selectedOptions[0] ? lv.selectedOptions[0].textContent : "",
+    student: document.getElementById("fStudent").value.trim(),
+    course:  sel.value,
+    courseText: sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : "",
+    msg:     document.getElementById("fMsg").value.trim()
+  };
+}
+function validate(d){
+  const bad = [];
+  if (d.name.length < 2)                      bad.push("fName");
+  if (!/^\d{9,15}$/.test(digitsOf(d.phone)))  bad.push("fPhone");
+  if (!d.level)                               bad.push("fLevel");
+  if (!d.course)                              bad.push("fCourse");
+  return bad;
+}
+function clearErrs(){
+  form.querySelectorAll(".field.err").forEach(f => {
+    f.classList.remove("err");
+    const el = f.querySelector("input,select,textarea");
+    if (el) el.setAttribute("aria-invalid","false");
   });
-  if (firstBad) {
-    firstBad.focus();
+}
+function markErr(id){
+  const el = document.getElementById(id), f = el.closest(".field");
+  f.classList.add("err");
+  el.setAttribute("aria-invalid","true");
+}
+function waLinkFor(d){
+  const L = [
+    t("wa.title"),
+    t("wa.parent") + ": " + d.name,
+    t("wa.phone") + ": " + d.phone,
+    (d.student ? t("wa.child") + ": " + d.student + " — " + d.levelText
+               : t("wa.child") + ": " + d.levelText),
+    t("wa.program") + ": " + d.courseText
+  ];
+  if (d.msg) L.push(t("wa.note") + ": " + d.msg);
+  return "https://wa.me/" + CONFIG.centerWa + "?text=" + encodeURIComponent(L.join("\n"));
+}
+function showResult(kind, opt){
+  form.hidden = true;
+  resultPanel.hidden = false;
+  resultPanel.classList.toggle("fail", kind === "fail");
+  if (kind === "ok"){
+    resIco.innerHTML = '<i data-lucide="check"></i>';
+    resTitle.textContent = t("reg.res.okT");
+    resMsg.textContent = t("reg.res.okM").replace("{ref}", opt.ref);
+    resWaTxt.textContent = t("reg.res.okBtn");
+    resRetry.hidden = true;
+  } else if (kind === "wa"){
+    resIco.innerHTML = '<svg width="20" height="20"><use href="#wa"/></svg>';
+    resTitle.textContent = t("reg.res.waT");
+    resMsg.textContent = t("reg.res.waM");
+    resWaTxt.textContent = t("reg.res.waBtn");
+    resRetry.hidden = true;
+  } else {
+    resIco.innerHTML = '<i data-lucide="alert-triangle"></i>';
+    resTitle.textContent = t("reg.res.failT");
+    resMsg.textContent = t("reg.res.failM");
+    resWaTxt.textContent = t("reg.res.failBtn");
+    resRetry.hidden = false;
+  }
+  resWaBtn.href = opt.link;
+  icons();
+  resultPanel.scrollIntoView({behavior: RM ? "auto" : "smooth", block:"center"});
+  resultPanel.focus({preventScroll:true});
+}
+function hideResult(){ resultPanel.hidden = true; form.hidden = false; }
+resRetry.addEventListener("click", () => { hideResult(); document.getElementById("fName").focus(); });
+
+/* silent POST to FormSubmit (AJAX, JSON, 10s timeout) */
+function sendFormSubmit(d, ref){
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), 10000);
+  return fetch("https://formsubmit.co/ajax/" + CONFIG.formEmail, {
+    method: "POST",
+    signal: ctrl.signal,
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({
+      _subject: t("mail.subject"),
+      _template: "table",
+      _captcha: "false",
+      _honey: fHoney.value,
+      "Ref": ref,
+      "Lang": LANG.toUpperCase(),
+      "Parent": d.name,
+      "Phone / WhatsApp": d.phone,
+      "Level": d.levelText,
+      "Pupil": d.student || "—",
+      "Program": d.courseText,
+      "Message": d.msg || "—",
+      "Page": location.href
+    })
+  }).then(r => r.json()).then(j => {
+    if (!(j.success === "true" || j.success === true)) throw new Error(j.message || "formsubmit");
+  }).finally(() => clearTimeout(to));
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  clearErrs();
+
+  /* 1 — check every field BEFORE sending anything */
+  const d = collect();
+  const bad = validate(d);
+  if (bad.length){
+    bad.forEach(markErr);
+    const first = document.getElementById(bad[0]);
+    first.closest(".field").scrollIntoView({behavior: RM ? "auto" : "smooth", block:"center"});
+    first.focus({preventScroll:true});
+    submitBtn.classList.add("shake");
+    setTimeout(() => submitBtn.classList.remove("shake"), 400);
     toast(t("toast.err"), t("toast.errMsg"), true);
     return;
   }
-  const btn = document.getElementById("fSubmit"),
-        label = btn.querySelector("span"),
-        old = label.textContent;
-  btn.classList.add("loading"); btn.disabled = true; label.textContent = t("reg.sending");
-  setTimeout(() => {
-    btn.classList.remove("loading"); btn.disabled = false; label.textContent = old;
-    const ref = "CS-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random()*9000);
+
+  /* 2 — bot trap: honeypot filled → pretend success, send nothing */
+  if (fHoney.value){
+    showResult("ok", {ref:"CS-XXXX", link: waLinkFor(d)});
     form.reset();
-    toast(t("toast.ok"), t("toast.okMsg").replace("{ref}", ref));
-  }, 950);
+    return;
+  }
+
+  /* 3 — deliver */
+  if (!CONFIG.formEnabled){
+    /* MODE B — WhatsApp, zero setup, always works */
+    const link = waLinkFor(d);
+    window.open(link, "_blank");
+    showResult("wa", {link});
+    form.reset();
+    clearErrs();
+    return;
+  }
+
+  /* MODE A — FormSubmit email, with WhatsApp fallback on any failure */
+  const ref = "CS-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random()*9000);
+  const label = submitBtn.querySelector("span"), old = label.textContent;
+  submitBtn.classList.add("loading"); submitBtn.disabled = true; label.textContent = t("reg.sending");
+  try {
+    await sendFormSubmit(d, ref);
+    showResult("ok", {ref, link: waLinkFor(d)});
+    form.reset();
+    clearErrs();
+  } catch (err){
+    showResult("fail", {link: waLinkFor(d)});   /* nothing reset — data kept */
+  } finally {
+    submitBtn.classList.remove("loading"); submitBtn.disabled = false; label.textContent = old;
+  }
+});
+
+/* live error clearing */
+form.querySelectorAll("input, select, textarea").forEach(el => {
+  const clear = () => { const f = el.closest(".field"); if (f){ f.classList.remove("err"); el.setAttribute("aria-invalid","false"); } };
+  el.addEventListener("input", clear);
+  el.addEventListener("change", clear);
 });
 
 /* ================= LIVE CLOCK (Souk El Arbaa — Africa/Casablanca) ================= */
@@ -1714,6 +1924,7 @@ function setLang(l){
   document.title = t("docTitle");
   document.querySelectorAll("[data-setlang]").forEach(b => b.classList.toggle("on", b.dataset.setlang === l));
   const openIds = new Set([...list.querySelectorAll(".prog.open")].map(el => el.id));
+  hideResult(); /* if the result panel was open, return to the fresh form */
   applyStatic();
   renderMarquee(); renderPrograms(); renderRooms(); renderBoard(); renderTeachers(); buildSelect();
   openIds.forEach(id => { const el = document.getElementById(id); if (el) { el.classList.add("open"); el.querySelector(".prog-head").setAttribute("aria-expanded","true"); } });
