@@ -2,16 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script src="js/theme-boot.js"></script>
   <title>Centre Souifi — Souk El Arbaa du Gharb · Soutien scolaire & langues du soir</title>
   <meta name="description" content="Centre Souifi — soutien scolaire du soir à Souk El Arbaa du Gharb : primaire, collège, lycée (TC–2BAC), langues (FR·EN·AR), professeurs expérimentés, suivi personnalisé. Cours du soir tous les jours dès 18h. WhatsApp : +212 612 692 300.">
   <meta name="theme-color" id="metaTheme" content="#05080F">
+  <link rel="canonical" href="https://hamzauit.github.io/souifi-center/">
+
+  <!-- Link preview (WhatsApp, Facebook, Telegram, etc.) -->
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Centre Souifi">
+  <meta property="og:locale" content="fr_MA">
+  <meta property="og:url" content="https://hamzauit.github.io/souifi-center/">
   <meta property="og:title" content="Centre Souifi — Soutien scolaire & langues · Souk El Arbaa du Gharb">
   <meta property="og:description" content="Cours du soir tous les jours dès 18h : primaire, collège, lycée, langues. Apprenez aujourd'hui, réussissez demain.">
-  <meta property="og:image" content="https://picsum.photos/seed/centre-souifi-og/1200/630.jpg">
+  <meta property="og:image" content="https://hamzauit.github.io/souifi-center/assets/og-share.png">
+  <meta property="og:image:secure_url" content="https://hamzauit.github.io/souifi-center/assets/og-share.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Centre Souifi — soutien scolaire et langues du soir à Souk El Arbaa">
+
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Centre Souifi — Soutien scolaire & langues · Souk El Arbaa du Gharb">
+  <meta name="twitter:description" content="Cours du soir tous les jours dès 18h : primaire, collège, lycée, langues. Apprenez aujourd'hui, réussissez demain.">
+  <meta name="twitter:image" content="https://hamzauit.github.io/souifi-center/assets/og-share.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700&family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +42,7 @@
   <div class="header-in">
     <a class="brand" href="#top">
       <img class="logo-mark logo-theme-dark" src="assets/logo.png" width="38" height="38" alt="Centre Souifi">
-      <img class="logo-mark logo-theme-light" src="assets/logo-light.png" width="38" height="38" alt="">
+      <img class="logo-mark logo-theme-light" src="assets/logo-dark-theme.png" width="38" height="38" alt="">
       <span class="brand-name">CENTRE&nbsp;SOUIFI</span>
       <span class="brand-loc" data-i18n="hdr.city">SOUK EL ARBAA</span>
     </a>
@@ -57,15 +72,15 @@
 
 <div class="m-menu" id="mMenu" aria-hidden="true">
   <img class="m-logo logo-theme-dark" src="assets/logo.png" width="44" height="44" alt="">
-  <img class="m-logo logo-theme-light" src="assets/logo-light.png" width="44" height="44" alt="">
+  <img class="m-logo logo-theme-light" src="assets/logo-dark-theme.png" width="44" height="44" alt="">
   <button id="mClose" class="round" aria-label="Close menu"><i data-lucide="x"></i></button>
-  <a href="#academy"><span>01</span><i data-i18n="nav.idea" style="font-style:normal">The centre</i></a>
-  <a href="#programs"><span>02</span><i data-i18n="nav.programs" style="font-style:normal">Programs</i></a>
-  <a href="#rooms"><span>03</span><i data-i18n="nav.rooms" style="font-style:normal">The rooms</i></a>
-  <a href="#schedule"><span>04</span><i data-i18n="nav.schedule" style="font-style:normal">The week</i></a>
-  <a href="#voices"><span>05</span><i data-i18n="nav.voices" style="font-style:normal">Voices</i></a>
-  <a href="#place"><span>06</span><i data-i18n="nav.place" style="font-style:normal">The place</i></a>
-  <a href="#register"><span>07</span><i data-i18n="nav.register" style="font-style:normal">Register</i></a>
+  <a href="#academy" style="--i:0"><span>01</span><i data-i18n="nav.idea" style="font-style:normal">The centre</i></a>
+  <a href="#programs" style="--i:1"><span>02</span><i data-i18n="nav.programs" style="font-style:normal">Programs</i></a>
+  <a href="#rooms" style="--i:2"><span>03</span><i data-i18n="nav.rooms" style="font-style:normal">The rooms</i></a>
+  <a href="#schedule" style="--i:3"><span>04</span><i data-i18n="nav.schedule" style="font-style:normal">The week</i></a>
+  <a href="#voices" style="--i:4"><span>05</span><i data-i18n="nav.voices" style="font-style:normal">Voices</i></a>
+  <a href="#place" style="--i:5"><span>06</span><i data-i18n="nav.place" style="font-style:normal">The place</i></a>
+  <a href="#register" style="--i:6"><span>07</span><i data-i18n="nav.register" style="font-style:normal">Register</i></a>
   <div class="m-lang" role="group" aria-label="Language / Langue / اللغة">
     <button type="button" data-setlang="en">English</button>
     <button type="button" data-setlang="fr">Français</button>
@@ -144,7 +159,7 @@
     </div>
     <div class="prog-list" id="progList"></div>
 
-    <!-- teachers — part of the same section -->
+    <!-- teachers section hidden for now
     <div class="prog-teachers">
       <div class="sec-head sec-top reveal">
         <div>
@@ -163,6 +178,7 @@
       <p class="t-empty" id="tEmpty" data-i18n="fac.empty" hidden>No teachers for this level yet — try another filter.</p>
       <p class="fac-note reveal" data-i18n="fac.note">…PLUS MORE SUBJECT TEACHERS ACROSS ALL LEVELS.</p>
     </div>
+    -->
   </div>
 </section>
 
@@ -315,12 +331,14 @@
             <label for="fLevel" data-i18n="reg.levelL">Your child's level *</label>
             <div class="sel">
               <select id="fLevel" name="level">
+                <option value="" disabled selected hidden data-i18n="reg.lvPh">Choose a level…</option>
                 <option value="primary" data-i18n="reg.lv1">Primary · CP – CM2</option>
                 <option value="college" data-i18n="reg.lv2">Collège · 1ère – 3ème</option>
                 <option value="lycee" data-i18n="reg.lv3">Lycée · TC – 2BAC</option>
               </select>
               <i data-lucide="chevron-down"></i>
             </div>
+            <p class="err-msg" data-i18n="reg.errLevel">Choose your child's level.</p>
           </div>
           <div class="field">
             <label for="fStudent" data-i18n="reg.student">Pupil's first name</label>
@@ -337,11 +355,24 @@
         </div>
         <div class="field">
           <label for="fMsg" data-i18n="reg.msg">Anything we should know?</label>
-          <textarea id="fMsg" name="msg" data-i18n-ph="reg.phMsg" placeholder="Which days suit you? Which subjects?"></textarea>
+          <textarea id="fMsg" name="msg" maxlength="800" data-i18n-ph="reg.phMsg" placeholder="Which days suit you? Which subjects?"></textarea>
         </div>
         <button type="submit" class="btn primary" id="fSubmit"><span data-i18n="reg.submit">Send my request</span> <i data-lucide="send"></i></button>
         <p class="f-note" data-i18n="reg.note">TELL US YOUR PREFERRED DAYS · WE CONFIRM THE GROUP'S TIMES ON WHATSAPP</p>
+        <!-- honeypot — bots fill this, humans never see it -->
+        <input type="text" id="fHoney" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       </form>
+
+      <!-- result panel: success / whatsapp / failure -->
+      <div class="result" id="formResult" hidden tabindex="-1" role="alert">
+        <span class="res-ico" id="resIco"></span>
+        <h3 id="resTitle"></h3>
+        <p id="resMsg"></p>
+        <div class="res-actions">
+          <a class="btn primary" id="resWaBtn" target="_blank" rel="noopener"><svg class="res-wa"><use href="#wa"/></svg><span id="resWaTxt"></span></a>
+          <button type="button" class="btn ghost" id="resRetry" hidden data-i18n="reg.res.retry">Try again</button>
+        </div>
+      </div>
 
       <aside class="visit reveal" style="--d:.12s">
         <svg class="s8"><use href="#star8"/></svg>
@@ -373,7 +404,7 @@
 <footer>
   <div class="zellige" aria-hidden="true"></div>
   <div class="container">
-    <p class="foot-word reveal">CENTRE <img class="foot-logo logo-theme-dark" src="assets/logo.png" width="48" height="48" alt=""> <img class="foot-logo logo-theme-light" src="assets/logo-light.png" width="48" height="48" alt=""> SOUIFI</p>
+    <p class="foot-word reveal">CENTRE <img class="foot-logo logo-theme-dark" src="assets/logo.png" width="48" height="48" alt=""> <img class="foot-logo logo-theme-light" src="assets/logo-dark-theme.png" width="48" height="48" alt=""> SOUIFI</p>
     <div class="foot-grid">
       <div>
         <p class="foot-fr">Apprenez aujourd'hui, réussissez demain.</p>
@@ -401,11 +432,14 @@
       <button class="round" id="toTop" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
       <span data-i18n="foot.bar2">POUR LE SOUTIEN ET LES LANGUES · STATIC SITE ON GITHUB PAGES</span>
     </div>
+    <p class="foot-dev">
+      <span data-i18n="foot.dev">Site by</span>
+      <a href="https://gothamza.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Hamza Bouktitiya</a>
+    </p>
   </div>
 </footer>
 
 <div id="toasts" aria-live="polite"></div>
-
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="js/config.js"></script>

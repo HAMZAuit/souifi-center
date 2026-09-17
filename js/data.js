@@ -1,5 +1,5 @@
 ﻿/* ================= DATA (per-language) ================= */
-var PROGRAMS = [
+const PROGRAMS = [
  {code:"CS-PRI",seed:"centre-souifi-prim",
   en:{title:"Primary · CP → CM2",meta:"EVENING SESSIONS",tag:"Solid foundations for a big life.",desc:"Homework help, mathematics, French and scientific discovery — small groups, gentle methodology, and homework finished and understood before home.",days:"Set with the teacher",length:"All school year",level:"CP – CM2",fee:"250 MAD / month",teacher:"Nadia Tazi & team"},
   fr:{title:"Primaire · CP → CM2",meta:"SÉANCES DU SOIR",tag:"Des bases solides pour une grande vie !",desc:"Aide aux devoirs, mathématiques, français et éveil scientifique — petits groupes, méthodologie en douceur, et des devoirs terminés et compris avant la maison.",days:"À définir avec le prof",length:"Toute l'année scolaire",level:"CP – CM2",fee:"250 MAD / mois",teacher:"Nadia Tazi & l'équipe"},
@@ -25,8 +25,8 @@ var PROGRAMS = [
   fr:{title:"Préparation aux examens · Régional & National",meta:"AVANT CHAQUE EXAMEN",tag:"Six semaines avant l'examen. Ensemble.",desc:"Avant chaque examen officiel — régional 3AC, régional 1BAC, national 2BAC — un sprint de six semaines : annales, examens blancs en conditions réelles, et un plan de révision que votre enfant suit vraiment.",days:"6 semaines avant l'examen",length:"Sprints de 6 semaines",level:"3AC · 1BAC · 2BAC",fee:"400 MAD / sprint",teacher:"Toute l'équipe"},
   ar:{title:"التحضير للامتحانات · الجهوي والوطني",meta:"قبل كل امتحان",tag:"ستة أسابيع قبل الامتحان. معًا.",desc:"قبل كل امتحان رسمي — الجهوي الثالثة إعدادي، الجهوي الأولى باك، الوطني الثانية باك — ستة أسابيع مكثفة: امتحانات سابقة، اختبارات تجريبية بشروط حقيقية، وخطة مراجعة يلتزم بها ابنك فعلًا.",days:"6 أسابيع قبل الامتحان",length:"6 أسابيع مكثفة",level:"3إعدادي · 1باك · 2باك",fee:"400 درهم / أسابيع",teacher:"الفريق كاملًا"}}
 ];
-var LI = {en:0,fr:1,ar:2};
-var QUOTES = [
+const LI = {en:0,fr:1,ar:2};
+const QUOTES = [
  {en:{q:"My son went from hiding at the back of the class to raising his hand. That is worth more than any mark.",n:"Khadija",m:"Mother of a 2AC pupil"},
   fr:{q:"Mon fils est passé du fond de la classe à la main levée. Ça vaut plus que n'importe quelle note.",n:"Khadija",m:"Mère d'un élève de 2AC"},
   ar:{q:"ابني انتقل من الاختباء في مؤخرة القسم إلى رفع يده. وهذا أثمن من أي نقطة.",n:"خديجة",m:"والد تلميذ في الثانية إعدادي"}},
@@ -41,11 +41,10 @@ var QUOTES = [
   ar:{q:"مساءان في الأسبوع هنا، وصعد معدله في الرياضيات من 8 إلى 13. تحققت من ورقة النقاط بنفسي.",n:"مصطفى",m:"والد تلميذ في الأولى باك"}}
 ];
 
-/* ---- ROOMS (the 4 salles — profs pick whichever they want) ----
-   images: placeholder seeds now. When you have real photos, replace each entry
-   with your file path, e.g. images:"salle1.jpg" → "images/salle1-1.jpg"
-   (any entry containing "/" is used as a direct path, no code change needed). */
-var ROOMS_DATA = [
+/* ---- ROOMS (the 4 salles) ----
+   images: placeholder seeds now. For real photos use paths like "images/salle1-1.jpg"
+   (any entry containing "/" is used as a direct path — no code change needed). */
+const ROOMS_DATA = [
  {num:"01",images:["cs-room1-a","cs-room1-b","cs-room1-c","cs-room1-d"],
   name:{en:"The big room",fr:"La grande salle",ar:"القاعة الكبرى"},
   tag:{en:"Main classes · all levels",fr:"Cours principaux · tous niveaux",ar:"الدروس الرئيسية · كل المستويات"}},
@@ -63,7 +62,7 @@ var ROOMS_DATA = [
 /* ---- TEACHERS (demo names — replace with the real profs) ----
    whatsapp: teacher's own number, digits only — used ONLY if direct:true
    direct:   true = publish teacher's number (consented) · false = route via the centre   */
-var TEACHERS = [
+const TEACHERS = [
  {seed:"souifi-prof-yassine", levels:["college","lycee"], direct:false, whatsapp:"",
   name:{en:"Yassine El Amrani",fr:"Yassine El Amrani",ar:"ياسين العمراني"},
   subject:{en:"Mathematics",fr:"Mathématiques",ar:"الرياضيات"},
@@ -95,4 +94,4 @@ var TEACHERS = [
   badge:{en:"Former school director",fr:"Ex-directeur d'école",ar:"مدير مدرسة سابق"},
   exp:{en:"22 years",fr:"22 ans",ar:"22 سنة"}}
 ];
-function pic(seed) { return "https://picsum.photos/seed/" + seed + "/640/420.jpg"; }
+const pic = seed => `https://picsum.photos/seed/${seed}/640/420.jpg`;

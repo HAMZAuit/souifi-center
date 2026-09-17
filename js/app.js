@@ -1,5 +1,6 @@
 ﻿(function(){
 "use strict";
+"use strict";
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const icons = () => { if (window.lucide) lucide.createIcons(); };
 /* ================= TOASTS ================= */
@@ -70,7 +71,7 @@ list.addEventListener("click", e => {
   if (ap) {
     const i = +ap.dataset.i;
     document.getElementById("fCourse").value = PROGRAMS[i].code;
-    document.getElementById("register").scrollIntoView({behavior: RM ? "auto" : "smooth"});
+    scrollToSection("register");
     toast(`${PROGRAMS[i].code} — ${t("toast.sel")}`, t("toast.selMsg"));
     setTimeout(() => document.getElementById("fName").focus({preventScroll:true}), 750);
   }
@@ -132,7 +133,6 @@ function renderRooms(){
   icons();
 }
 
-/* lightbox */
 const lb = document.getElementById("lightbox"),
       lbImg = document.getElementById("lbImg"),
       lbCap = document.getElementById("lbCap"),
@@ -228,10 +228,11 @@ function decodeBoard(){
     row.querySelectorAll(".d").forEach((c,j) => scramble(c, i*60 + j*45)));
 }
 
-/* ================= TEACHERS (filter + WhatsApp) ================= */
+/* ================= TEACHERS (filter + WhatsApp) — section commented out in HTML ================= */
 let tFilter = "all";
 const tGrid = document.getElementById("teachGrid"),
-      tEmpty = document.getElementById("tEmpty");
+      tEmpty = document.getElementById("tEmpty"),
+      tFilters = document.getElementById("tFilters");
 
 function waLink(tc){
   const direct = tc.direct && tc.whatsapp;
@@ -242,6 +243,7 @@ function waLink(tc){
   return `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
 }
 function renderTeachers(){
+  if (!tGrid) return;
   tGrid.innerHTML = TEACHERS.map((tc,i)=>`
   <article class="t-card reveal" id="tc-${i}" style="--d:${(i*.06).toFixed(2)}s">
     <div class="t-photo">
@@ -266,6 +268,7 @@ function renderTeachers(){
   applyFilter(false);
 }
 function applyFilter(animate){
+  if (!tGrid || !tEmpty) return;
   let shown = 0;
   tGrid.querySelectorAll(".t-card").forEach((el,i)=>{
     const match = tFilter === "all" || TEACHERS[i].levels.includes(tFilter);
@@ -287,7 +290,7 @@ function applyFilter(animate){
   });
   tEmpty.hidden = shown > 0;
 }
-document.getElementById("tFilters").addEventListener("click", e => {
+if (tFilters) tFilters.addEventListener("click", e => {
   const chip = e.target.closest(".chip");
   if (!chip || chip.dataset.lvl === tFilter) return;
   tFilter = chip.dataset.lvl;
@@ -323,9 +326,23 @@ document.getElementById("vNext").addEventListener("click", () => { vi = (vi+1)%Q
 document.getElementById("vWrap").addEventListener("mouseenter", () => clearTimeout(vTimer));
 document.getElementById("vWrap").addEventListener("mouseleave", vRestart);
 
-/* ================= REGISTRATION FORM ================= */
+/* ================= REGISTRATION FORM =================
+   validate → deliver:
+   · Mode B (default): WhatsApp opens pre-filled — parent presses Send
+   · Mode A (formEnabled:true): silent POST to FormSubmit → email
+   · Any failure: WhatsApp fallback button, nothing is lost        */
 const form = document.getElementById("regForm"),
-      sel = document.getElementById("fCourse");
+      sel = document.getElementById("fCourse"),
+      fHoney = document.getElementById("fHoney"),
+      submitBtn = document.getElementById("fSubmit"),
+      resultPanel = document.getElementById("formResult"),
+      resIco = document.getElementById("resIco"),
+      resTitle = document.getElementById("resTitle"),
+      resMsg = document.getElementById("resMsg"),
+      resWaBtn = document.getElementById("resWaBtn"),
+      resWaTxt = document.getElementById("resWaTxt"),
+      resRetry = document.getElementById("resRetry");
+
 function buildSelect(){
   const cur = sel.value;
   sel.innerHTML = `<option value="">${t("prog.selectPh")}</option>` +
@@ -333,36 +350,169 @@ function buildSelect(){
     `<option value="unsure">${t("prog.unsure")}</option>`;
   sel.value = cur || "";
 }
-form.querySelectorAll("input, select, textarea").forEach(el =>
-  el.addEventListener("input", () => el.closest(".field").classList.remove("err")));
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const checks = [
-    ["fName",  v => v.trim().length >= 2],
-    ["fPhone", v => /^[+0-9][0-9\s()-]{7,}$/.test(v.trim())],
-    ["fCourse",v => !!v]
-  ];
-  let firstBad = null;
-  checks.forEach(([id, ok]) => {
-    const el = document.getElementById(id), bad = !ok(el.value);
-    el.closest(".field").classList.toggle("err", bad);
-    if (bad && !firstBad) firstBad = el;
+
+const digitsOf = v => v.replace(/[^\d]/g, "").replace(/^00/, "");
+function collect(){
+  const lv = document.getElementById("fLevel");
+  return {
+    name:    document.getElementById("fName").value.trim(),
+    phone:   document.getElementById("fPhone").value.trim(),
+    level:   lv.value,
+    levelText:  lv.selectedOptions[0] ? lv.selectedOptions[0].textContent : "",
+    student: document.getElementById("fStudent").value.trim(),
+    course:  sel.value,
+    courseText: sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : "",
+    msg:     document.getElementById("fMsg").value.trim()
+  };
+}
+function validate(d){
+  const bad = [];
+  if (d.name.length < 2)                      bad.push("fName");
+  if (!/^\d{9,15}$/.test(digitsOf(d.phone)))  bad.push("fPhone");
+  if (!d.level)                               bad.push("fLevel");
+  if (!d.course)                              bad.push("fCourse");
+  return bad;
+}
+function clearErrs(){
+  form.querySelectorAll(".field.err").forEach(f => {
+    f.classList.remove("err");
+    const el = f.querySelector("input,select,textarea");
+    if (el) el.setAttribute("aria-invalid","false");
   });
-  if (firstBad) {
-    firstBad.focus();
+}
+function markErr(id){
+  const el = document.getElementById(id), f = el.closest(".field");
+  f.classList.add("err");
+  el.setAttribute("aria-invalid","true");
+}
+function waLinkFor(d){
+  const L = [
+    t("wa.title"),
+    t("wa.parent") + ": " + d.name,
+    t("wa.phone") + ": " + d.phone,
+    (d.student ? t("wa.child") + ": " + d.student + " — " + d.levelText
+               : t("wa.child") + ": " + d.levelText),
+    t("wa.program") + ": " + d.courseText
+  ];
+  if (d.msg) L.push(t("wa.note") + ": " + d.msg);
+  return "https://wa.me/" + CONFIG.centerWa + "?text=" + encodeURIComponent(L.join("\n"));
+}
+function showResult(kind, opt){
+  form.hidden = true;
+  resultPanel.hidden = false;
+  resultPanel.classList.toggle("fail", kind === "fail");
+  if (kind === "ok"){
+    resIco.innerHTML = '<i data-lucide="check"></i>';
+    resTitle.textContent = t("reg.res.okT");
+    resMsg.textContent = t("reg.res.okM").replace("{ref}", opt.ref);
+    resWaTxt.textContent = t("reg.res.okBtn");
+    resRetry.hidden = true;
+  } else if (kind === "wa"){
+    resIco.innerHTML = '<svg width="20" height="20"><use href="#wa"/></svg>';
+    resTitle.textContent = t("reg.res.waT");
+    resMsg.textContent = t("reg.res.waM");
+    resWaTxt.textContent = t("reg.res.waBtn");
+    resRetry.hidden = true;
+  } else {
+    resIco.innerHTML = '<i data-lucide="alert-triangle"></i>';
+    resTitle.textContent = t("reg.res.failT");
+    resMsg.textContent = t("reg.res.failM");
+    resWaTxt.textContent = t("reg.res.failBtn");
+    resRetry.hidden = false;
+  }
+  resWaBtn.href = opt.link;
+  icons();
+  resultPanel.scrollIntoView({behavior: RM ? "auto" : "smooth", block:"center"});
+  resultPanel.focus({preventScroll:true});
+}
+function hideResult(){ resultPanel.hidden = true; form.hidden = false; }
+resRetry.addEventListener("click", () => { hideResult(); document.getElementById("fName").focus(); });
+
+/* silent POST to FormSubmit (AJAX, JSON, 10s timeout) */
+function sendFormSubmit(d, ref){
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), 10000);
+  return fetch("https://formsubmit.co/ajax/" + CONFIG.formEmail, {
+    method: "POST",
+    signal: ctrl.signal,
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({
+      _subject: t("mail.subject"),
+      _template: "table",
+      _captcha: "false",
+      _honey: fHoney.value,
+      "Ref": ref,
+      "Lang": LANG.toUpperCase(),
+      "Parent": d.name,
+      "Phone / WhatsApp": d.phone,
+      "Level": d.levelText,
+      "Pupil": d.student || "—",
+      "Program": d.courseText,
+      "Message": d.msg || "—",
+      "Page": location.href
+    })
+  }).then(r => r.json()).then(j => {
+    if (!(j.success === "true" || j.success === true)) throw new Error(j.message || "formsubmit");
+  }).finally(() => clearTimeout(to));
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  clearErrs();
+
+  /* 1 — check every field BEFORE sending anything */
+  const d = collect();
+  const bad = validate(d);
+  if (bad.length){
+    bad.forEach(markErr);
+    const first = document.getElementById(bad[0]);
+    first.closest(".field").scrollIntoView({behavior: RM ? "auto" : "smooth", block:"center"});
+    first.focus({preventScroll:true});
+    submitBtn.classList.add("shake");
+    setTimeout(() => submitBtn.classList.remove("shake"), 400);
     toast(t("toast.err"), t("toast.errMsg"), true);
     return;
   }
-  const btn = document.getElementById("fSubmit"),
-        label = btn.querySelector("span"),
-        old = label.textContent;
-  btn.classList.add("loading"); btn.disabled = true; label.textContent = t("reg.sending");
-  setTimeout(() => {
-    btn.classList.remove("loading"); btn.disabled = false; label.textContent = old;
-    const ref = "CS-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random()*9000);
+
+  /* 2 — bot trap: honeypot filled → pretend success, send nothing */
+  if (fHoney.value){
+    showResult("ok", {ref:"CS-XXXX", link: waLinkFor(d)});
     form.reset();
-    toast(t("toast.ok"), t("toast.okMsg").replace("{ref}", ref));
-  }, 950);
+    return;
+  }
+
+  /* 3 — deliver */
+  if (!CONFIG.formEnabled){
+    /* MODE B — WhatsApp, zero setup, always works */
+    const link = waLinkFor(d);
+    window.open(link, "_blank");
+    showResult("wa", {link});
+    form.reset();
+    clearErrs();
+    return;
+  }
+
+  /* MODE A — FormSubmit email, with WhatsApp fallback on any failure */
+  const ref = "CS-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random()*9000);
+  const label = submitBtn.querySelector("span"), old = label.textContent;
+  submitBtn.classList.add("loading"); submitBtn.disabled = true; label.textContent = t("reg.sending");
+  try {
+    await sendFormSubmit(d, ref);
+    showResult("ok", {ref, link: waLinkFor(d)});
+    form.reset();
+    clearErrs();
+  } catch (err){
+    showResult("fail", {link: waLinkFor(d)});   /* nothing reset — data kept */
+  } finally {
+    submitBtn.classList.remove("loading"); submitBtn.disabled = false; label.textContent = old;
+  }
+});
+
+/* live error clearing */
+form.querySelectorAll("input, select, textarea").forEach(el => {
+  const clear = () => { const f = el.closest(".field"); if (f){ f.classList.remove("err"); el.setAttribute("aria-invalid","false"); } };
+  el.addEventListener("input", clear);
+  el.addEventListener("change", clear);
 });
 
 /* ================= LIVE CLOCK (Souk El Arbaa — Africa/Casablanca) ================= */
@@ -387,7 +537,7 @@ function tick(){
     cv.width = W*dpr; cv.height = H*dpr;
     cv.style.width = W+"px"; cv.style.height = H+"px";
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    const n = Math.min(240, Math.round(W*H/8500));
+    const n = Math.min(innerWidth < 700 ? 90 : 240, Math.round(W*H/(innerWidth < 700 ? 14000 : 8500)));
     stars = Array.from({length:n}, () => ({
       x:Math.random(), y:Math.random(), r:.4+Math.random()*1.3, d:Math.random(),
       ph:Math.random()*Math.PI*2, sp:.4+Math.random()*1.2,
@@ -396,8 +546,9 @@ function tick(){
     if (RM) draw(0);
   }
   hero.addEventListener("pointermove", e => {
+    if (innerWidth < 760) return;
     mx = e.clientX/innerWidth - .5; my = e.clientY/innerHeight - .5;
-    document.getElementById("moonWrap").style.transform = `translate(${mx*-16}px, ${my*-9}px)`;
+    document.getElementById("moonWrap").style.transform = `translate(${mx*-16}px, calc(-50% + ${my*-9}px))`;
   });
   function draw(ts){
     if (isLight()) { ctx.clearRect(0,0,W,H); return; }
@@ -467,7 +618,7 @@ const metaTheme = document.getElementById("metaTheme");
 function syncThemeAssets(){
   const light = document.documentElement.dataset.theme === "light";
   metaTheme.content = light ? "#F3F0E9" : "#05080F";
-  const iconHref = light ? "assets/logo-light.png" : "assets/logo.png";
+  const iconHref = light ? "assets/logo-dark-theme.png" : "assets/logo.png";
   document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').forEach(el => { el.href = iconHref; });
 }
 document.getElementById("tBtn").addEventListener("click", () => {
@@ -491,11 +642,12 @@ function setLang(l){
   document.title = t("docTitle");
   document.querySelectorAll("[data-setlang]").forEach(b => b.classList.toggle("on", b.dataset.setlang === l));
   const openIds = new Set([...list.querySelectorAll(".prog.open")].map(el => el.id));
+  hideResult(); /* if the result panel was open, return to the fresh form */
   applyStatic();
   renderMarquee(); renderPrograms(); renderRooms(); renderBoard(); renderTeachers(); buildSelect();
   openIds.forEach(id => { const el = document.getElementById(id); if (el) { el.classList.add("open"); el.querySelector(".prog-head").setAttribute("aria-expanded","true"); } });
   list.querySelectorAll(".prog").forEach(el => el.classList.add("in"));
-  tGrid.querySelectorAll(".t-card").forEach(el => el.classList.add("in"));
+  if (tGrid) tGrid.querySelectorAll(".t-card").forEach(el => el.classList.add("in"));
   roomsGrid.querySelectorAll(".room-card").forEach(el => el.classList.add("in"));
   renderV(vi, false); vRestart();
   tick(); icons();
@@ -533,11 +685,49 @@ document.querySelectorAll("main section[id]").forEach(s => secObs.observe(s));
 const hdr = document.getElementById("hdr");
 addEventListener("scroll", () => hdr.classList.toggle("scrolled", scrollY > 12), {passive:true});
 
+/* nav / menu / footer: land on section content under the fixed header (not empty padding) */
+function scrollToSection(hash){
+  const id = (hash || "").replace(/^#/, "");
+  if (!id) return false;
+  const section = document.getElementById(id);
+  if (!section) return false;
+  const target =
+    section.querySelector(".sec-head, .about-side, .week-title, h2, h1") || section;
+  const headerH = hdr.getBoundingClientRect().height || 72;
+  const y = target.getBoundingClientRect().top + scrollY - headerH - 18;
+  scrollTo({ top: Math.max(0, y), behavior: RM ? "auto" : "smooth" });
+  try { history.pushState(null, "", "#" + id); } catch(e){}
+  return true;
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener("click", e => {
+    const href = a.getAttribute("href");
+    if (!href || href === "#" || href === "#top") {
+      if (href === "#top") {
+        e.preventDefault();
+        scrollTo({ top: 0, behavior: RM ? "auto" : "smooth" });
+        try { history.pushState(null, "", "#top"); } catch(err){}
+      }
+      return;
+    }
+    if (scrollToSection(href)) e.preventDefault();
+  });
+});
+
 const mMenu = document.getElementById("mMenu");
-const setMenu = o => { mMenu.classList.toggle("open", o); document.body.style.overflow = o ? "hidden" : ""; };
+const setMenu = o => {
+  mMenu.classList.toggle("open", o);
+  mMenu.setAttribute("aria-hidden", o ? "false" : "true");
+  document.body.style.overflow = o ? "hidden" : "";
+  document.getElementById("mBtn").setAttribute("aria-expanded", o ? "true" : "false");
+};
+document.getElementById("mBtn").setAttribute("aria-expanded","false");
 document.getElementById("mBtn").addEventListener("click", () => setMenu(true));
 document.getElementById("mClose").addEventListener("click", () => setMenu(false));
 mMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && mMenu.classList.contains("open")) setMenu(false);
+});
 
 document.getElementById("toTop").addEventListener("click", () =>
   scrollTo({top:0, behavior: RM ? "auto" : "smooth"}));
