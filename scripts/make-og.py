@@ -51,6 +51,6 @@ center_text("CENTRE SOUIFI", 340, font(54), "#EAF0F8")
 center_text("Soutien scolaire & langues · Souk El Arbaa", 420, font(28), "#3FE0C5")
 center_text("Cours du soir dès 18h · Tous les jours", 480, font(22), "#93A1B5")
 
-out = "assets/og-share.png"
+out = "assets/og-share-v2.png"
 img.save(out, "PNG", optimize=True)
 print("saved", out, img.size, os.path.getsize(out))
