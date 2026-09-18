@@ -161,13 +161,16 @@ function lbPreloadNeighbors(){
     img.src = roomImg(ROOMS_DATA[n.room].images[n.idx], 1200, 800);
   });
 }
+function centerInScroller(scroller, el){
+  if (!scroller || !el) return;
+  const left = el.offsetLeft - (scroller.clientWidth - el.offsetWidth) / 2;
+  scroller.scrollTo({ left: Math.max(0, left), behavior: RM ? "auto" : "smooth" });
+}
 function renderLbRooms(){
   if (!lbRooms) return;
   lbRooms.innerHTML = ROOMS_DATA.map((r,i)=>
-    `<button type="button" role="tab" aria-selected="${i===lbRoom}" class="${i===lbRoom?"on":""}" data-room="${i}">${r.num} · ${r.name[LANG]}</button>`
+    `<button type="button" role="tab" aria-selected="${i===lbRoom}" class="${i===lbRoom?"on":""}" data-room="${i}"><span class="lb-room-num">${r.num}</span><span class="lb-room-name">${r.name[LANG]}</span></button>`
   ).join("");
-  const on = lbRooms.querySelector("button.on");
-  if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: RM ? "auto" : "smooth" });
 }
 function fillLB(){
   const r = ROOMS_DATA[lbRoom];
@@ -184,8 +187,7 @@ function fillLB(){
   lbCount.textContent = (lbIdx + 1) + " / " + r.images.length;
   lbThumbs.innerHTML = r.images.map((s,j)=>
     `<img src="${roomImg(s,160,110)}" data-j="${j}" class="${j===lbIdx?"on":""}" alt="" draggable="false">`).join("");
-  const on = lbThumbs.querySelector("img.on");
-  if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: RM ? "auto" : "smooth" });
+  centerInScroller(lbThumbs, lbThumbs.querySelector("img.on"));
   renderLbRooms();
   lbPreloadNeighbors();
 }
@@ -195,6 +197,7 @@ function openLB(r,i){
   lb.classList.add("open");
   lb.setAttribute("aria-hidden","false");
   document.body.style.overflow = "hidden";
+  icons();
   document.getElementById("lbClose").focus();
 }
 function closeLB(){
@@ -230,6 +233,7 @@ roomsGrid.addEventListener("keydown", e => {
 document.getElementById("lbPrev").addEventListener("click", e => { e.stopPropagation(); lbGo(-1); });
 document.getElementById("lbNext").addEventListener("click", e => { e.stopPropagation(); lbGo(1); });
 document.getElementById("lbClose").addEventListener("click", e => { e.stopPropagation(); closeLB(); });
+document.getElementById("lbDone").addEventListener("click", e => { e.stopPropagation(); closeLB(); });
 lb.addEventListener("click", e => { if (e.target === lb) closeLB(); });
 lbThumbs.addEventListener("click", e => {
   const th = e.target.closest("img");

@@ -393,8 +393,8 @@
   <div class="lb-sheet">
     <div class="lb-top">
       <div class="lb-head"><b id="lbCap"></b><span id="lbSub"></span></div>
-      <button class="round lb-x" id="lbClose" data-i18n-aria="lb.close" aria-label="Close"><i data-lucide="x"></i></button>
     </div>
+    <button class="round lb-x" id="lbClose" data-i18n-aria="lb.close" aria-label="Close"><i data-lucide="x"></i></button>
     <div class="lb-stage-wrap">
       <figure class="lb-stage" id="lbStage">
         <img id="lbImg" src="" alt="" draggable="false">
@@ -406,7 +406,10 @@
     <div class="lb-bottom">
       <div class="lb-thumbs" id="lbThumbs"></div>
       <div class="lb-rooms" id="lbRooms" role="tablist"></div>
-      <p class="lb-hint" data-i18n="lb.hint"></p>
+      <div class="lb-actions">
+        <p class="lb-hint" data-i18n="lb.hint"></p>
+        <button type="button" class="lb-done" id="lbDone" data-i18n="lb.close">Close</button>
+      </div>
     </div>
   </div>
 </div>
