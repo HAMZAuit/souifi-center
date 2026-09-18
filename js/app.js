@@ -17,13 +17,19 @@ function toast(title, msg, warn){
 /* ================= MARQUEE ================= */
 const mqTrack = document.getElementById("mqTrack");
 function renderMarquee(){
+  if (!mqTrack) return;
   const items = [...PROGRAMS.map(p => p[LANG].title), t("mq.hours"), ["fr", T.en["mq.fr"]], ["ar", T.ar["mq.ar"]]];
   const group = `<div class="mq-group">${items.map(it =>
     Array.isArray(it)
       ? `<span class="mq-${it[0]}">${it[1]}</span>`
       : `<span>${it}</span>`
-  ).join(`<svg class="s8"><use href="#star8"/></svg>`)}<svg class="s8"><use href="#star8"/></svg></div>`;
+  ).join(`<svg class="s8" aria-hidden="true"><use href="#star8"/></svg>`)}<svg class="s8" aria-hidden="true"><use href="#star8"/></svg></div>`;
+  /* Two identical copies so translateX(-50%) loops seamlessly */
   mqTrack.innerHTML = group + group;
+  /* Restart CSS animation after DOM swap (language change, etc.) */
+  mqTrack.style.animation = "none";
+  void mqTrack.offsetWidth;
+  mqTrack.style.animation = "";
 }
 
 /* ================= PROGRAMS INDEX ================= */

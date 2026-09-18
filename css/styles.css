@@ -206,15 +206,25 @@ h1 em{font-style:italic;color:var(--mint)}
 }
 
 /* ============ MARQUEE ============ */
-.marquee{overflow:hidden;border-block:1px solid var(--line);padding:17px 0;background:var(--bg-2);max-width:100%;width:100%}
-.mq-track{display:flex;width:max-content;animation:mq 34s linear infinite;will-change:transform}
-.marquee:hover .mq-track{animation-play-state:paused}
-.mq-group{display:flex;align-items:center;gap:2.6rem;padding-inline-end:2.6rem}
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:17px 0;background:var(--bg-2);max-width:100%;width:100%;direction:ltr;unicode-bidi:isolate}
+.mq-track{display:flex;width:max-content;animation:mq 34s linear infinite;will-change:transform;transform:translateX(0)}
+@media (hover:hover) and (pointer:fine){
+  .marquee:hover .mq-track{animation-play-state:paused}
+}
+.mq-group{display:flex;align-items:center;gap:2.6rem;padding-inline-end:2.6rem;flex:none}
 .mq-group span{font:500 12.5px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-.mq-group .s8{color:var(--mint);opacity:.85}
+.mq-group .s8{color:var(--mint);opacity:.85;flex:none}
 .mq-fr{font:italic 400 15px var(--serif) !important;color:var(--amber) !important;text-transform:none !important;letter-spacing:.02em !important}
-.mq-ar{font:400 15px var(--serif) !important;color:var(--mint) !important;text-transform:none !important;letter-spacing:0 !important}
-@keyframes mq{to{transform:translateX(-50%)}}
+.mq-ar{font:400 15px var(--serif) !important;color:var(--mint) !important;text-transform:none !important;letter-spacing:0 !important;direction:rtl;unicode-bidi:plaintext}
+@keyframes mq{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@media (max-width:760px){
+  .marquee{padding:14px 0}
+  .mq-group{gap:1.6rem;padding-inline-end:1.6rem}
+  .mq-group span{font-size:11.5px;letter-spacing:.12em;color:var(--text)}
+}
 
 /* ============ SECTIONS ============ */
 section{padding:clamp(80px,12vh,140px) 0;position:relative}
@@ -589,6 +599,11 @@ footer .container{width:100%}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
   html{scroll-behavior:auto}
+  /* Keep marquee text visible — the global rule would park it off-screen after one tick */
+  .marquee .mq-track{
+    animation:none !important;
+    transform:none !important;
+  }
 }
 
 /* ============ PHONE / TABLET ============ */
