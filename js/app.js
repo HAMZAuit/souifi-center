@@ -136,10 +136,39 @@ function renderRooms(){
 const lb = document.getElementById("lightbox"),
       lbImg = document.getElementById("lbImg"),
       lbCap = document.getElementById("lbCap"),
+      lbSub = document.getElementById("lbSub"),
       lbCount = document.getElementById("lbCount"),
-      lbThumbs = document.getElementById("lbThumbs");
+      lbThumbs = document.getElementById("lbThumbs"),
+      lbRooms = document.getElementById("lbRooms");
 let lbRoom = 0, lbIdx = 0;
 
+function lbNeighbor(room, idx, delta){
+  let r = room, i = idx + delta;
+  while (i < 0){
+    r = (r - 1 + ROOMS_DATA.length) % ROOMS_DATA.length;
+    i = ROOMS_DATA[r].images.length - 1;
+  }
+  while (i >= ROOMS_DATA[r].images.length){
+    i -= ROOMS_DATA[r].images.length;
+    r = (r + 1) % ROOMS_DATA.length;
+  }
+  return { room: r, idx: i };
+}
+function lbPreloadNeighbors(){
+  [-1, 1].forEach(d => {
+    const n = lbNeighbor(lbRoom, lbIdx, d);
+    const img = new Image();
+    img.src = roomImg(ROOMS_DATA[n.room].images[n.idx], 1200, 800);
+  });
+}
+function renderLbRooms(){
+  if (!lbRooms) return;
+  lbRooms.innerHTML = ROOMS_DATA.map((r,i)=>
+    `<button type="button" role="tab" aria-selected="${i===lbRoom}" class="${i===lbRoom?"on":""}" data-room="${i}">${r.num} · ${r.name[LANG]}</button>`
+  ).join("");
+  const on = lbRooms.querySelector("button.on");
+  if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: RM ? "auto" : "smooth" });
+}
 function fillLB(){
   const r = ROOMS_DATA[lbRoom];
   lbImg.style.opacity = 0;
@@ -147,12 +176,18 @@ function fillLB(){
   lbImg.src = roomImg(r.images[lbIdx], 1200, 800);
   lbImg.onload = () => { lbImg.style.opacity = 1; };
   lbImg.alt = r.name[LANG];
-  lbCap.textContent = r.name[LANG] + " — " + r.tag[LANG];
-  lbCount.textContent = (lbIdx+1) + " / " + r.images.length;
+  lbCap.textContent = r.name[LANG];
+  const roomLabel = (t("lb.room") || "Room {n} / {total}")
+    .replace("{n}", String(lbRoom + 1))
+    .replace("{total}", String(ROOMS_DATA.length));
+  lbSub.textContent = r.tag[LANG] + " · " + roomLabel;
+  lbCount.textContent = (lbIdx + 1) + " / " + r.images.length;
   lbThumbs.innerHTML = r.images.map((s,j)=>
     `<img src="${roomImg(s,160,110)}" data-j="${j}" class="${j===lbIdx?"on":""}" alt="" draggable="false">`).join("");
   const on = lbThumbs.querySelector("img.on");
-  if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: RM ? "auto" : "smooth" });
+  renderLbRooms();
+  lbPreloadNeighbors();
 }
 function openLB(r,i){
   lbRoom = r; lbIdx = i;
@@ -168,8 +203,20 @@ function closeLB(){
   document.body.style.overflow = "";
 }
 function lbGo(d){
-  const n = ROOMS_DATA[lbRoom].images.length;
-  lbIdx = (lbIdx + d + n) % n;
+  const next = lbNeighbor(lbRoom, lbIdx, d);
+  lbRoom = next.room;
+  lbIdx = next.idx;
+  fillLB();
+}
+function lbRoomGo(d){
+  lbRoom = (lbRoom + d + ROOMS_DATA.length) % ROOMS_DATA.length;
+  lbIdx = 0;
+  fillLB();
+}
+function lbJumpRoom(i){
+  if (i === lbRoom) return;
+  lbRoom = i;
+  lbIdx = 0;
   fillLB();
 }
 roomsGrid.addEventListener("click", e => {
@@ -188,23 +235,29 @@ lbThumbs.addEventListener("click", e => {
   const th = e.target.closest("img");
   if (th) { lbIdx = +th.dataset.j; fillLB(); }
 });
+lbRooms.addEventListener("click", e => {
+  const btn = e.target.closest("button[data-room]");
+  if (btn) lbJumpRoom(+btn.dataset.room);
+});
 document.addEventListener("keydown", e => {
   if (!lb.classList.contains("open")) return;
   if (e.key === "Escape") closeLB();
-  if (e.key === "ArrowLeft") lbGo(document.documentElement.dir === "rtl" ? 1 : -1);
-  if (e.key === "ArrowRight") lbGo(document.documentElement.dir === "rtl" ? -1 : 1);
+  const rtl = document.documentElement.dir === "rtl";
+  if (e.key === "ArrowLeft") { e.preventDefault(); lbGo(rtl ? 1 : -1); }
+  if (e.key === "ArrowRight") { e.preventDefault(); lbGo(rtl ? -1 : 1); }
+  if (e.key === "ArrowUp") { e.preventDefault(); lbRoomGo(-1); }
+  if (e.key === "ArrowDown") { e.preventDefault(); lbRoomGo(1); }
 });
 
-/* Swipe + tap left/right on the photo (phones & desktop) */
+/* Swipe photos (horizontal) + rooms (vertical); tap left/right thirds */
 (function(){
-  const stage = lb.querySelector(".lb-stage");
+  const stage = document.getElementById("lbStage") || lb.querySelector(".lb-stage");
   if (!stage) return;
   let sx = 0, sy = 0, pid = null, moved = false;
   const SWIPE = 42;
 
   stage.addEventListener("pointerdown", e => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
-    if (e.target.closest("figcaption")) return;
     pid = e.pointerId;
     sx = e.clientX; sy = e.clientY;
     moved = false;
@@ -220,14 +273,18 @@ document.addEventListener("keydown", e => {
     const dx = e.clientX - sx;
     const dy = e.clientY - sy;
     const rtl = document.documentElement.dir === "rtl";
+    const absX = Math.abs(dx), absY = Math.abs(dy);
 
-    if (Math.abs(dx) >= SWIPE && Math.abs(dx) > Math.abs(dy)) {
-      // swipe left → next (mirrored in RTL)
+    if (absX >= SWIPE && absX > absY) {
       if (dx < 0) lbGo(rtl ? -1 : 1);
       else lbGo(rtl ? 1 : -1);
       return;
     }
-    // tap left / right third of the image
+    if (absY >= SWIPE && absY > absX) {
+      // swipe up → next room, swipe down → previous room
+      lbRoomGo(dy < 0 ? 1 : -1);
+      return;
+    }
     if (!moved) {
       const rect = stage.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -696,6 +753,7 @@ function setLang(l){
   list.querySelectorAll(".prog").forEach(el => el.classList.add("in"));
   if (tGrid) tGrid.querySelectorAll(".t-card").forEach(el => el.classList.add("in"));
   roomsGrid.querySelectorAll(".room-card").forEach(el => el.classList.add("in"));
+  if (lb.classList.contains("open")) fillLB();
   renderV(vi, false); vRestart();
   tick(); icons();
 }
