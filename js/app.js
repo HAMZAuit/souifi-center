@@ -143,13 +143,16 @@ let lbRoom = 0, lbIdx = 0;
 function fillLB(){
   const r = ROOMS_DATA[lbRoom];
   lbImg.style.opacity = 0;
+  lbImg.draggable = false;
   lbImg.src = roomImg(r.images[lbIdx], 1200, 800);
   lbImg.onload = () => { lbImg.style.opacity = 1; };
   lbImg.alt = r.name[LANG];
   lbCap.textContent = r.name[LANG] + " — " + r.tag[LANG];
   lbCount.textContent = (lbIdx+1) + " / " + r.images.length;
   lbThumbs.innerHTML = r.images.map((s,j)=>
-    `<img src="${roomImg(s,160,110)}" data-j="${j}" class="${j===lbIdx?"on":""}" alt="">`).join("");
+    `<img src="${roomImg(s,160,110)}" data-j="${j}" class="${j===lbIdx?"on":""}" alt="" draggable="false">`).join("");
+  const on = lbThumbs.querySelector("img.on");
+  if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
 }
 function openLB(r,i){
   lbRoom = r; lbIdx = i;
@@ -177,9 +180,9 @@ roomsGrid.addEventListener("keydown", e => {
   const card = e.target.closest(".room-card");
   if (card && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openLB(+card.dataset.room, 0); }
 });
-document.getElementById("lbPrev").addEventListener("click", () => lbGo(-1));
-document.getElementById("lbNext").addEventListener("click", () => lbGo(1));
-document.getElementById("lbClose").addEventListener("click", closeLB);
+document.getElementById("lbPrev").addEventListener("click", e => { e.stopPropagation(); lbGo(-1); });
+document.getElementById("lbNext").addEventListener("click", e => { e.stopPropagation(); lbGo(1); });
+document.getElementById("lbClose").addEventListener("click", e => { e.stopPropagation(); closeLB(); });
 lb.addEventListener("click", e => { if (e.target === lb) closeLB(); });
 lbThumbs.addEventListener("click", e => {
   const th = e.target.closest("img");
@@ -188,9 +191,53 @@ lbThumbs.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if (!lb.classList.contains("open")) return;
   if (e.key === "Escape") closeLB();
-  if (e.key === "ArrowLeft") lbGo(-1);
-  if (e.key === "ArrowRight") lbGo(1);
+  if (e.key === "ArrowLeft") lbGo(document.documentElement.dir === "rtl" ? 1 : -1);
+  if (e.key === "ArrowRight") lbGo(document.documentElement.dir === "rtl" ? -1 : 1);
 });
+
+/* Swipe + tap left/right on the photo (phones & desktop) */
+(function(){
+  const stage = lb.querySelector(".lb-stage");
+  if (!stage) return;
+  let sx = 0, sy = 0, pid = null, moved = false;
+  const SWIPE = 42;
+
+  stage.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.target.closest("figcaption")) return;
+    pid = e.pointerId;
+    sx = e.clientX; sy = e.clientY;
+    moved = false;
+    try { stage.setPointerCapture(e.pointerId); } catch(_){}
+  });
+  stage.addEventListener("pointermove", e => {
+    if (pid !== e.pointerId) return;
+    if (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8) moved = true;
+  });
+  function endPointer(e){
+    if (pid !== e.pointerId) return;
+    pid = null;
+    const dx = e.clientX - sx;
+    const dy = e.clientY - sy;
+    const rtl = document.documentElement.dir === "rtl";
+
+    if (Math.abs(dx) >= SWIPE && Math.abs(dx) > Math.abs(dy)) {
+      // swipe left → next (mirrored in RTL)
+      if (dx < 0) lbGo(rtl ? -1 : 1);
+      else lbGo(rtl ? 1 : -1);
+      return;
+    }
+    // tap left / right third of the image
+    if (!moved) {
+      const rect = stage.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      if (x < rect.width * 0.33) lbGo(rtl ? 1 : -1);
+      else if (x > rect.width * 0.67) lbGo(rtl ? -1 : 1);
+    }
+  }
+  stage.addEventListener("pointerup", endPointer);
+  stage.addEventListener("pointercancel", e => { if (pid === e.pointerId) pid = null; });
+})();
 
 /* ================= WEEK BOARD (no fixed hours) ================= */
 const WEEK = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
