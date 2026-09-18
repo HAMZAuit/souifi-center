@@ -196,8 +196,6 @@ h1 em{font-style:italic;color:var(--mint)}
 .scroll-line::after{content:"";position:absolute;left:0;top:-40%;width:100%;height:40%;background:var(--mint);animation:sline 2.1s ease-in-out infinite}
 @keyframes sline{to{top:110%}}
 .hero-hours{font:400 10px var(--mono);letter-spacing:.2em;color:var(--faint)}
-.coords{position:absolute;inset-inline-end:24px;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:center;font:400 9.5px var(--mono);letter-spacing:.3em;color:var(--faint);white-space:nowrap;z-index:2}
-@media (max-width:1100px){.coords{display:none}}
 @media (max-width:760px){.hero-hours{display:none}}
 @media (max-height:760px){
   h1{font-size:clamp(2.2rem,6.5vh,4.2rem);margin:14px 0 16px}
@@ -654,7 +652,7 @@ footer .container{width:100%}
     opacity:.28;
     z-index:0;
   }
-  .moon{width:clamp(160px,62vw,240px);animation:none}
+  .moon{width:clamp(110px,42vw,168px);animation:none}
   .hero-kicker{font-size:9.5px;letter-spacing:.12em;flex-wrap:wrap;gap:8px;line-height:1.5;max-width:none}
   .hero-kicker::before{width:22px}
   h1{font-size:clamp(2.15rem,10vw,3rem);line-height:1.12;margin:12px 0 12px;max-width:11ch}

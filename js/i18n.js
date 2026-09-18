@@ -1,5 +1,5 @@
 ﻿/* ================= I18N ================= */
-let LANG = document.documentElement.lang || 'en';
+let LANG = document.documentElement.lang || 'ar';
 const T = {
 en:{
  docTitle:"Centre Souifi — Souk El Arbaa du Gharb · Soutien scolaire & langues du soir",
