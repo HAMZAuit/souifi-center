@@ -1,9 +1,11 @@
 ﻿/* ============ REAL CENTRE SETTINGS ============ */
 const CONFIG = {
   placeName: "Centre Souifi — Souk El Arbaa du Gharb",
-  address:   "Souk El Arbaa du Gharb · adresse exacte à confirmer au centre",
-  mapQuery:  "Souk El Arbaa du Gharb, Morocco",
-  zoom:      14,
+  /* Exact pin: https://maps.app.goo.gl/6noaXjyXVszhw1jM9 — أمام ثانوية مولاي عبد الله الشريف */
+  address:   "أمام ثانوية مولاي عبد الله الشريف · سوق الأربعاء الغرب",
+  mapQuery:  "34.678463,-5.997289",
+  mapsUrl:   "https://maps.app.goo.gl/6noaXjyXVszhw1jM9",
+  zoom:      17,
   phoneDisplay: "+212 612 692 300",
   centerWa: "212612692300",
 

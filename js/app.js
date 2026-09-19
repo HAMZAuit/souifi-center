@@ -704,12 +704,18 @@ function tick(){
 /* ================= THE PLACE — map + video ================= */
 (function(){
   const q = encodeURIComponent(CONFIG.mapQuery);
-  document.getElementById("mapAddr").textContent = CONFIG.address;
+  const mapsHref = CONFIG.mapsUrl || (`https://www.google.com/maps/search/?api=1&query=${q}`);
+  function syncMapAddr(){
+    const el = document.getElementById("mapAddr");
+    if (el) el.textContent = t("place.addrVal") || CONFIG.address;
+  }
+  syncMapAddr();
+  window.syncMapAddr = syncMapAddr;
   document.getElementById("mapEmbed").innerHTML =
     `<iframe title="Map — ${CONFIG.placeName}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
       src="https://www.google.com/maps?q=${q}&z=${CONFIG.zoom}&output=embed"></iframe>`;
   document.getElementById("btnDirections").href = `https://www.google.com/maps/dir/?api=1&destination=${q}`;
-  document.getElementById("btnMaps").href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+  document.getElementById("btnMaps").href = mapsHref;
 
   const cinema = document.getElementById("cinema"),
         poster = document.getElementById("cPoster"),
@@ -765,6 +771,7 @@ function setLang(l){
   roomsGrid.querySelectorAll(".room-card").forEach(el => el.classList.add("in"));
   if (lb.classList.contains("open")) fillLB();
   renderV(vi, false); vRestart();
+  if (typeof syncMapAddr === "function") syncMapAddr();
   tick(); icons();
 }
 document.querySelectorAll("[data-setlang]").forEach(b =>
