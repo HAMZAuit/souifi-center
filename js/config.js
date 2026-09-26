@@ -25,6 +25,6 @@ const CONFIG = {
   formEnabled: false,
   formEmail: "centresouifi@gmail.com",   /* ⚠️ REPLACE with the centre's real email */
 
-  videoSrc:    "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  videoPoster: "https://picsum.photos/seed/centre-souifi-front/1600/900.jpg"
+  videoSrc:    "videos/centre-tour.mp4",
+  videoPoster: "images/centare hall.jpeg"
 };

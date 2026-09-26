@@ -65,22 +65,18 @@ const QUOTES = [
   ar:{q:"الاستثمار في المعرفة يعطي أفضل عائد.",n:"بنجامين فرانكلين",m:"عن قيمة الدراسة"}}
 ];
 
-/* ---- ROOMS (the 4 salles) ----
-   images: placeholder seeds now. For real photos use paths like "images/salle1-1.jpg"
-   (any entry containing "/" is used as a direct path — no code change needed). */
+/* ---- ROOMS (the 3 salles) ----
+   Any image path containing "/" is used as-is. */
 const ROOMS_DATA = [
- {num:"01",images:["cs-room1-a","cs-room1-b","cs-room1-c","cs-room1-d"],
-  name:{en:"The big room",fr:"La grande salle",ar:"القاعة الكبرى"},
-  tag:{en:"Main classes · all levels",fr:"Cours principaux · tous niveaux",ar:"الدروس الرئيسية · كل المستويات"}},
- {num:"02",images:["cs-room2-a","cs-room2-b","cs-room2-c","cs-room2-d"],
-  name:{en:"The quiet room",fr:"La salle calme",ar:"القاعة الهادئة"},
-  tag:{en:"Small groups · homework help",fr:"Petits groupes · aide aux devoirs",ar:"مجموعات صغيرة · دعم الواجبات"}},
- {num:"03",images:["cs-room3-a","cs-room3-b","cs-room3-c","cs-room3-d"],
-  name:{en:"The languages room",fr:"La salle des langues",ar:"قاعة اللغات"},
-  tag:{en:"Conversation · FR · EN · AR",fr:"Conversation · FR · EN · AR",ar:"محادثة · فر · إنج · ع"}},
- {num:"04",images:["cs-room4-a","cs-room4-b","cs-room4-c","cs-room4-d"],
-  name:{en:"The lycée room",fr:"La salle du lycée",ar:"قاعة التأهيلي"},
-  tag:{en:"TC – 2BAC sessions",fr:"Séances TC – 2BAC",ar:"حصص الجذع – 2باك"}}
+ {num:"01",images:["images/salle1.jpeg","images/salle1 (2).jpeg","images/salle1 (3).jpeg","images/salle11.png"],
+  name:{en:"Salle 1",fr:"Salle 1",ar:"القاعة 1"},
+  tag:{en:"Classroom",fr:"Salle de cours",ar:"قاعة درس"}},
+ {num:"02",images:["images/salle2.jpeg","images/salle2 (2).jpeg","images/salle2 (3).jpeg","images/salle22.png"],
+  name:{en:"Salle 2",fr:"Salle 2",ar:"القاعة 2"},
+  tag:{en:"Classroom",fr:"Salle de cours",ar:"قاعة درس"}},
+ {num:"03",images:["images/salle3.jpeg","images/salle3 (2).jpeg","images/salle3 (3).jpeg","images/salle33.png"],
+  name:{en:"Salle 3",fr:"Salle 3",ar:"القاعة 3"},
+  tag:{en:"Classroom",fr:"Salle de cours",ar:"قاعة درس"}}
 ];
 
 /* ---- TEACHERS (demo names — replace with the real profs) ----
