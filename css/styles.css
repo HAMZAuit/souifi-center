@@ -378,7 +378,10 @@ html[lang="ar"] .room-name{line-height:1.6}
 .lb-done{flex:none;font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line-2);border-radius:999px;background:rgba(5,8,15,.7);color:var(--text);padding:12px 18px;min-height:42px;cursor:pointer;transition:.25s;-webkit-tap-highlight-color:transparent}
 .lb-done:hover,.lb-done:focus-visible{border-color:var(--mint);color:var(--mint);outline:none}
 @media (max-width:640px){
-  .lb-sheet{padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));position:relative}
+  /* Keep the close button above a 3-button nav bar, a home indicator, or neither. */
+  .lb{height:100svh;max-height:100svh}
+  .lb-sheet{height:100%;max-height:100%;padding:max(10px,env(safe-area-inset-top)) 10px max(56px,calc(12px + env(safe-area-inset-bottom,0px)));position:relative}
+  .lb-bottom{padding-bottom:0}
   .lb-head b{font-size:.98rem}
   .lb-nav{width:48px;height:48px;inset-inline:4px;background:rgba(5,8,15,.9)}
   .lb-thumbs img{width:64px;height:44px}
